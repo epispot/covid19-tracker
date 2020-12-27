@@ -1,2 +1,3 @@
-gtkChop/covid19
-jrclarete/COVID-19-Cases
+COVID-19-Cases
+covid-data-api
+discord.py
