@@ -9,6 +9,10 @@ TOKEN = open("token.txt","r").readline()
 prefix = 'info '
 client = commands.Bot(command_prefix = prefix)
 
+@client.event
+async def on_ready():
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='a pandemic | info'))
+
 client.remove_command("help")
 
 @client.command(pass_context=True)
