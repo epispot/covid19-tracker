@@ -28,7 +28,7 @@ Active projects:
  - Everyone who has actively contributed to this project, including
    - @quantum9innovation
    - @quantalabs
- - All the stargazers, including:
+ - All the stargazers, including: <br>
  [![Stargazers repo roster for @epispot/covid19-tracker](https://reporoster.com/stars/epispot/covid19-tracker)](https://github.com/epispot/covid19-tracker/stargazers)
 
 `< Made with code and` :heart: `>`
