@@ -4,12 +4,15 @@ import covid19cases as covid19
 from covid.api import CovId19Data
 from covid import Covid
 from case_predictors import predict_uncontrolled
+from datetime import datetime
+import matplotlib.pyplot as plt
+import os
 
 api = CovId19Data(force=False)
 covid = Covid()
 
 TOKEN = open("token.txt","r").readline()
-prefix = 'info '
+prefix = 'dev '
 client = commands.Bot(command_prefix = prefix)
 
 @client.event
@@ -21,12 +24,13 @@ client.remove_command("help")
 @client.command(pass_context=True)
 async def help(ctx):
     embed = discord.Embed(
-        colour = discord.Colour.blue())
+        colour = discord.Colour.blurple())
     embed.set_author(name='Commands')
     embed.add_field(name='cases', value='Returns general data about global cases, or add the name of a country after to get data for it. NOTE: Use `list` to see all country names.')
     embed.add_field(name='credits', value='Returns data source and APIs used in the bot')
     embed.add_field(name='list', value='Returns all the avaliable country names that can be used with `info cases` and `info predict`')
-    embed.add_field(name='predict', value='Predicts total _active_ cases for following 7 days, if days are not given. Format: `info predict 7 USA` will predict the active cases in the US for the next 7 days.')
+    embed.add_field(name='predict', value='Predicts total _active_ cases for following 7 days, if days are not given. Format: `info predict 7 USA` will predict the active cases in the US for the next 7 days. You can also use `info predict` or `info predict _days_`.')
+    embed.add_field(name='compare', value='Returns a graph comparing two countries. Format: `info compare country1 country2`. If there is more that one word in the name of the country, seperate it with a dash. eg. `info compare Saudi-Arabia USA')
     await ctx.send(embed=embed)
 
 @client.event
@@ -134,6 +138,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.add_field(name='Day 5', value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), 7800000000000, 5), inline=False)
         embed.add_field(name='Day 6', value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), 7800000000000, 6), inline=False)
         embed.add_field(name='Day 7', value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), 7800000000000, 7), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
@@ -146,6 +152,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days + ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), 7800000000000, int(days)), inline=False)
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         await ctx.send(embed=embed)
     
     elif region2==None and region != None:
@@ -156,6 +164,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_author(name='Prediction')
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days + ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), int(cases["Population"].replace(',', '')), int(days)), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
@@ -167,6 +177,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_author(name='Prediction')
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days +  ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), int(cases["Population"].replace(',', '')), int(days)), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
@@ -178,6 +190,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_author(name='Prediction')
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days + ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), int(cases["Population"].replace(',', '')), int(days)), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
@@ -189,6 +203,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_author(name='Prediction')
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days + ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), int(cases["Population"].replace(',', '')), int(days)), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
@@ -200,6 +216,8 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_author(name='Prediction')
         embed.add_field(name='What this represents', value='If all restrictions were let loose for the following ' + days + ' day(s), we\'d have the following amount of active cases:')
         embed.add_field(name='Day '+ days, value=predict_uncontrolled(int(cases["TotalCases"].replace(',', '')), int(cases["ActiveCases"].replace(',', '')), int(cases["Population"].replace(',', '')), int(days)), inline=False)
+        embed.add_field(name='Current Active Cases', value=cases["ActiveCases"], inline=False)
+        embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
 
@@ -219,5 +237,52 @@ async def list(ctx):
     for i in listc:
         await ctx.send(i['name'])
     await ctx.send('Those are all of the country and regions that you can use. NOTE: If predicting, use `USA` instead of `US` as the country name.')
+
+@client.command()
+async def autofeeds(ctx, channel_id):
+    message = discord.Embed(
+        colour = discord.Colour.magenta()
+    )
+    message.add_field(name='All set and ready to go!', value=' ')
+    await ctx.send(embed=message)
+
+    now = datetime.now()
+
+    current_time = now.strftime("%H:%M:%S")
+
+    if current_time is "14:30:30":
+        cases = covid19.get_global_cases()
+        embed = discord.Embed(
+            colour = discord.Colour.red()
+        )
+        embed.set_author(name='Global Statistics')
+        embed.add_field(name='Cases', value=cases["TotalCases"])
+        embed.add_field(name='New Cases', value=cases["NewCases"])
+        embed.add_field(name="Deaths", value=cases["TotalDeaths"])
+        embed.add_field(name="New Deaths", value=cases["NewDeaths"])
+        embed.add_field(name="Recovered", value=cases["TotalRecovered"])
+        embed.add_field(name="New Recovered Patients", value=cases["NewRecovered"])
+        embed.add_field(name="Active Cases", value=cases["ActiveCases"])
+        embed.add_field(name="Critical", value=cases["Critical"])
+        embed.add_field(name="Cases Per Million", value=cases["CasesPerOneMillion"])
+        embed.add_field(name="Deaths Per Million", value=cases["DeathsPerOneMillion"])
+        embed.add_field(name="Last Updated", value=cases["LastUpdated"])
+
+        ctx.send(embed=embed, channel=channel_id)
+
+@client.command()
+async def compare(ctx, c1, c2):
+    data = [int(covid19.get_country_cases(c1.replace('-', ' '))["TotalCases"].replace(',', '')), int(covid19.get_country_cases(c2.replace('-', ' '))["TotalCases"].replace(',', ''))]
+    
+    fig = plt.subplots()
+    plt.bar([c1.replace('-', ' '), c2.replace('-', ' ')], data)
+    plt.suptitle(c1.replace('-', ' ') + " compared to " + c2.replace('-', ' '))
+    plt.savefig('graph.png',dpi=400)
+
+    await ctx.send(file=discord.File('graph.png'))
+
+    
+    os.remove("graph.png")
+    plt.clf()
 
 client.run(TOKEN)
