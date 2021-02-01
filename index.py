@@ -12,7 +12,7 @@ api = CovId19Data(force=False)
 covid = Covid()
 
 TOKEN = open("token.txt","r").readline()
-prefix = 'dev '
+prefix = 'info '
 client = commands.Bot(command_prefix = prefix)
 
 @client.event
@@ -31,6 +31,8 @@ async def help(ctx):
     embed.add_field(name='list', value='Returns all the avaliable country names that can be used with `info cases` and `info predict`')
     embed.add_field(name='predict', value='Predicts total _active_ cases for following 7 days, if days are not given. Format: `info predict 7 USA` will predict the active cases in the US for the next 7 days. You can also use `info predict` or `info predict _days_`.')
     embed.add_field(name='compare', value='Returns a graph comparing two countries. Format: `info compare country1 country2`. If there is more that one word in the name of the country, seperate it with a dash. eg. `info compare Saudi-Arabia USA')
+    embed.add_field(name='release_notes', value='View the latest updates of the new release.')
+    embed.add_field(name='server', value='Get invites to the official COVID-19 Tracker servers.')
     await ctx.send(embed=embed)
 
 @client.event
@@ -40,7 +42,7 @@ async def on_command_error(ctx, error):
 
 @client.command()
 async def cases(ctx, region=None, region2=None, region3=None, region4=None):
-    if region == None:
+    if region is None:
         cases = covid19.get_global_cases()
         
         embed = discord.Embed(
@@ -61,7 +63,7 @@ async def cases(ctx, region=None, region2=None, region3=None, region4=None):
 
         await ctx.send(embed=embed)
     
-    if region2 == None and region != None:
+    if region2 is None and region != None:
         
         data = covid.get_status_by_country_name(region)
 
@@ -77,7 +79,7 @@ async def cases(ctx, region=None, region2=None, region3=None, region4=None):
 
         await ctx.send(embed=embed)
     
-    if region2 != None and region3 == None:
+    if region2 != None and region3 is None:
         data = covid.get_status_by_country_name(region+" "+region2)
 
         embed = discord.Embed(
@@ -92,7 +94,7 @@ async def cases(ctx, region=None, region2=None, region3=None, region4=None):
 
         await ctx.send(embed=embed)
 
-    if region3 != None and region4 == None: 
+    if region3 != None and region4 is None: 
         data = covid.get_status_by_country_name(region+" "+region2+" "+region3)
 
         embed = discord.Embed(
@@ -124,7 +126,7 @@ async def cases(ctx, region=None, region2=None, region3=None, region4=None):
 
 @client.command()
 async def predict(ctx, days=None, region=None, region2=None, region3=None, region4=None, region5=None):
-    if days==None:
+    if daysisNone:
         cases = covid19.get_global_cases()
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -143,7 +145,7 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
-    elif region==None and days!=None:
+    elif regionisNone and days!=None:
         cases = covid19.get_global_cases()
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -156,7 +158,7 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.add_field(name='Current Total Cases', value=cases['TotalCases'])
         await ctx.send(embed=embed)
     
-    elif region2==None and region != None:
+    elif region2isNone and region != None:
         cases = covid19.get_country_cases(region)
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -169,7 +171,7 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
-    elif region3==None and region2 != None:
+    elif region3isNone and region2 != None:
         cases = covid19.get_country_cases(region+" "+region2)
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -182,7 +184,7 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
-    elif region4==None and region3 != None:
+    elif region4isNone and region3 != None:
         cases = covid19.get_country_cases(region+" "+region2+" "+region3)
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -195,7 +197,7 @@ async def predict(ctx, days=None, region=None, region2=None, region3=None, regio
         embed.set_footer(text='NOTE: The following predictions cannot be relied on and might not actually happen.')
         await ctx.send(embed=embed)
     
-    elif region5==None and region4 != None:
+    elif region5isNone and region4 != None:
         cases = covid19.get_country_cases(region+" "+region2+" "+region3+" "+region4)
         embed = discord.Embed(
             colour = discord.Colour.green()
@@ -239,38 +241,6 @@ async def list(ctx):
     await ctx.send('Those are all of the country and regions that you can use. NOTE: If predicting, use `USA` instead of `US` as the country name.')
 
 @client.command()
-async def autofeeds(ctx, channel_id):
-    message = discord.Embed(
-        colour = discord.Colour.magenta()
-    )
-    message.add_field(name='All set and ready to go!', value=' ')
-    await ctx.send(embed=message)
-
-    now = datetime.now()
-
-    current_time = now.strftime("%H:%M:%S")
-
-    if current_time is "14:30:30":
-        cases = covid19.get_global_cases()
-        embed = discord.Embed(
-            colour = discord.Colour.red()
-        )
-        embed.set_author(name='Global Statistics')
-        embed.add_field(name='Cases', value=cases["TotalCases"])
-        embed.add_field(name='New Cases', value=cases["NewCases"])
-        embed.add_field(name="Deaths", value=cases["TotalDeaths"])
-        embed.add_field(name="New Deaths", value=cases["NewDeaths"])
-        embed.add_field(name="Recovered", value=cases["TotalRecovered"])
-        embed.add_field(name="New Recovered Patients", value=cases["NewRecovered"])
-        embed.add_field(name="Active Cases", value=cases["ActiveCases"])
-        embed.add_field(name="Critical", value=cases["Critical"])
-        embed.add_field(name="Cases Per Million", value=cases["CasesPerOneMillion"])
-        embed.add_field(name="Deaths Per Million", value=cases["DeathsPerOneMillion"])
-        embed.add_field(name="Last Updated", value=cases["LastUpdated"])
-
-        ctx.send(embed=embed, channel=channel_id)
-
-@client.command()
 async def compare(ctx, c1, c2):
     data = [int(covid19.get_country_cases(c1.replace('-', ' '))["TotalCases"].replace(',', '')), int(covid19.get_country_cases(c2.replace('-', ' '))["TotalCases"].replace(',', ''))]
     
@@ -284,5 +254,28 @@ async def compare(ctx, c1, c2):
     
     os.remove("graph.png")
     plt.clf()
+
+@client.command()
+async def release_notes(ctx):
+    embed = discord.Embed(
+            colour = discord.Colour.red()
+        )
+    embed.set_author(name='Release Notes')
+    embed.title = 'v1.1.0'
+    embed.add_field(name='Bug Fixes', value='- Can use more than one word country names, while before it would return an error.')
+    embed.add_field(name='New Features', value='- Prediction of the world and countries for uncontrolled spread. \n - Country list, to view whether to use "USA" or "US" for example'+
+        '\n - A status! \n - More statistics! \n - Compare Countries with `info compare...`')
+    embed.set_footer(text='You can view the release notes for all of the releases at https://github.com/epispot/covid19-tracker/releases')
+    await ctx.send(embed=embed)
+
+@client.command()
+async def server(ctx):
+    embed = discord.Embed(
+        color = discord.Colour.dark_gold()
+    )
+    embed.set_author(name='Servers')
+    embed.add_field(name='Support Server', value='https://top.gg/bot/784949651303301150/invite')
+
+    await ctx.send(embed=embed)
 
 client.run(TOKEN)
