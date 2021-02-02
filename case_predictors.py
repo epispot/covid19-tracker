@@ -128,7 +128,7 @@ def predict_short_term(case_data, entries, initial, end, n, time):
     Model = compile_model(optimized_parameters)
     print('\nModel compiled.')
 
-    R_0 = optimized_parameters[0]
+    R_0 = optimized_parameters[0] # lgtm [py/unused-local-variable]
     initial_recovered = optimized_parameters[1]
 
     predictions = Model.integrate(range(0, time),
