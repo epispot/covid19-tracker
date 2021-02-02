@@ -1,5 +1,5 @@
 import epispot as epi
-import numpy as np
+import numpy as np # lgtm [py/unused-import]
 from copy import deepcopy
 
 
