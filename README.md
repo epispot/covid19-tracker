@@ -1,4 +1,5 @@
 # COVID-19 Tracker
+[![Discord Bots](https://top.gg/api/widget/status/784949651303301150.svg?noavatar=true)](https://top.gg/bot/784949651303301150)
 
 A Discord bot created to track the coronavirus outbreak.
 Made with epispot. Get live case data, hospitalization predictions, and other insights about how COVID-19 may spread in your area. Available on Top GG.
