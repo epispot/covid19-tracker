@@ -14,7 +14,7 @@ Made with epispot. Get live case data, hospitalization predictions, and other in
 # Contributing? :heart:
 
 Active projects:
-  - Prediction
+  - More detailed statistics
   - Graphs
   - and more ... (see the Projects tab) 
 
