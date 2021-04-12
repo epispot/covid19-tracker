@@ -1,3 +1,4 @@
+**NOTE: The COVID-19 Tracker bot will continue to run, but no new features will be added.**
 # COVID-19 Tracker
 [![Discord Bots](https://top.gg/api/widget/status/784949651303301150.svg?noavatar=true)](https://top.gg/bot/784949651303301150)
 
